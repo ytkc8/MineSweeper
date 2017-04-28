@@ -7,7 +7,10 @@ import java.util.Scanner;
 
 public class MineSweeper {
     public static void main(String arg[]) {
-        Mode mode = new Mode("easy");
+        playConsole(new Mode("easy"));
+    }
+
+    private static void playConsole(Mode mode) {
         GameBoard gameBoard = new GameBoard(mode);
         gameBoard.printPlayContent();
 
