@@ -22,9 +22,6 @@ public class GUIGameBoard extends JFrame implements MouseListener {
     private boolean wasGameOver;
     private List<ButtonCell> cells;
     private MineSweeperPanel mineSweeperPanel;
-    private JPopupMenu popup;
-    private JMenuItem clearMessage;
-    private JMenuItem gameOverMessage;
 
     public GUIGameBoard(Mode mode) {
         this.size = mode.getSize();
@@ -35,9 +32,6 @@ public class GUIGameBoard extends JFrame implements MouseListener {
         setTitle("MineSweeper");
         mineSweeperPanel = new MineSweeperPanel(mode);
         drawButton(this.size, mode.getButtonSize());
-        popup = new JPopupMenu();
-        gameOverMessage = new JMenuItem("* Game Over :( *");
-        clearMessage = new JMenuItem("** Game Clear!! :) **");
 
         getContentPane().add(mineSweeperPanel, BorderLayout.CENTER);
         pack();
@@ -187,18 +181,21 @@ public class GUIGameBoard extends JFrame implements MouseListener {
         ButtonCell cell = (ButtonCell) e.getSource();
         if ((e.getModifiers() & MouseEvent.BUTTON1_MASK) != 0) {
             openCell(cell.getVertical(), cell.getHorizontal());
-            if (isWasGameOver()) showPopup(e, gameOverMessage);
-            if (countNotOpenCell() == getBombNum()) showPopup(e, clearMessage);
+            if (isWasGameOver()) showPopup("* Game Over :( *");
+            if (countNotOpenCell() == getBombNum()) showPopup("** Game Clear!! :) **");
         }
         if ((e.getModifiers() & MouseEvent.BUTTON3_MASK) != 0) {
             setCellFlag(cell.getVertical(), cell.getHorizontal());
         }
     }
 
-    private void showPopup(MouseEvent e, JMenuItem item) {
-        popup.add(item);
-        popup.show(e.getComponent(), e.getX(), e.getY());
-        System.exit(0);
+    private void showPopup(String message) {
+        JFrame popup = new JFrame();
+        MineSweeperPanel popupPanel = new MineSweeperPanel(100, 100);
+        popupPanel.add(new JLabel(message));
+        popup.add(popupPanel);
+        popup.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        popup.setVisible(true);
     }
 
     @Override

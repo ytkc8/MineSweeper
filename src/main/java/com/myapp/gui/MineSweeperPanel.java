@@ -11,6 +11,10 @@ public class MineSweeperPanel extends JPanel {
         setPreferredSize(new Dimension(size, size));
     }
 
+    public MineSweeperPanel(int x, int y) {
+        setPreferredSize(new Dimension(x, y));
+    }
+
     public void paintComponent(Graphics g){
         super.paintComponent(g);
     }

@@ -9,8 +9,8 @@ import java.util.Scanner;
 
 public class MineSweeper {
     public static void main(String arg[]) {
-//        playGUI(new Mode("easy"));
-        playConsole(new Mode("easy"));
+        playGUI(new Mode("easy"));
+//        playConsole(new Mode("easy"));
     }
 
     private static void playGUI(Mode mode) {
