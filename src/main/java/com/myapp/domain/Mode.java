@@ -3,8 +3,10 @@ package com.myapp.domain;
 public class Mode {
     private int size;
     private int bombNum;
+    private int buttonSize;
 
     public Mode(String difficulty) {
+        this.buttonSize = 40;
         switch (difficulty) {
             case "hard":
                 this.size = 10;
@@ -27,5 +29,9 @@ public class Mode {
 
     public int getBombNum() {
         return bombNum;
+    }
+
+    public int getButtonSize() {
+        return buttonSize;
     }
 }
