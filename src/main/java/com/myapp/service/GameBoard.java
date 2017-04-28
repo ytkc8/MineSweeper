@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -66,7 +65,7 @@ public class GameBoard {
     int countAllBomb() {
         return this.cells
                 .stream()
-                .filter(cell -> cell.isHasBomb())
+                .filter(Cell::isHasBomb)
                 .collect(toList())
                 .size();
     }
@@ -89,7 +88,7 @@ public class GameBoard {
     }
 
     void setFistSelect(boolean fistSelect) {
-        isFistSelect = fistSelect;
+        this.isFistSelect = fistSelect;
     }
 
     void setBomb() {
@@ -116,7 +115,8 @@ public class GameBoard {
     }
 
     public void setCellFlag(int vertical, int horizontal) {
-        getCell(vertical, horizontal).ifPresent(cell -> cell.setHasFlag(true));
+        getCell(vertical, horizontal)
+                .ifPresent(cell -> cell.setHasFlag(!cell.isHasFlag()));
     }
 
     public void openCell(int vertical, int horizontal) {
@@ -143,7 +143,7 @@ public class GameBoard {
         });
     }
 
-    public void initializeGame() {
+    void initializeGame() {
         if (isFistSelect()) {
             setBomb();
             setFieldNum();
@@ -154,14 +154,15 @@ public class GameBoard {
     public void printPlayContent() {
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                Cell cell = getCell(j, i).get();
-                if (cell.isWasOpened()) {
-                    System.out.print("[" + cell.getFieldNum() + "]" + "\t");
-                } else if (cell.isHasFlag()) {
-                    System.out.print("[P]" + "\t");
-                } else {
-                    System.out.print("[=]" + "\t");
-                }
+                getCell(j, i).ifPresent(cell -> {
+                    if (cell.isWasOpened()) {
+                        System.out.print("[" + cell.getFieldNum() + "]" + "\t");
+                    } else if (cell.isHasFlag()) {
+                        System.out.print("[P]" + "\t");
+                    } else {
+                        System.out.print("[=]" + "\t");
+                    }
+                });
             }
             System.out.println();
         }
@@ -171,12 +172,13 @@ public class GameBoard {
     public void printBoardContent() {
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                Cell cell = getCell(j, i).get();
-                if (cell.isHasBomb()) {
-                    System.out.print("[*]" + "\t");
-                } else {
-                    System.out.print("[" + cell.getFieldNum() + "]" + "\t");
-                }
+                getCell(j, i).ifPresent(cell -> {
+                    if (cell.isHasBomb()) {
+                        System.out.print("[*]" + "\t");
+                    } else {
+                        System.out.print("[" + cell.getFieldNum() + "]" + "\t");
+                    }
+                });
             }
             System.out.println();
         }

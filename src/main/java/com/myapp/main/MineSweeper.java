@@ -1,7 +1,6 @@
 package com.myapp.main;
 
 import com.myapp.domain.Mode;
-import com.myapp.gui.MineSweeperFrame;
 import com.myapp.service.GUIGameBoard;
 import com.myapp.service.GameBoard;
 
@@ -10,17 +9,14 @@ import java.util.Scanner;
 
 public class MineSweeper {
     public static void main(String arg[]) {
-        playGUI(new Mode("easy"));
-//        playConsole(new Mode("easy"));
+//        playGUI(new Mode("easy"));
+        playConsole(new Mode("easy"));
     }
 
     private static void playGUI(Mode mode) {
         GUIGameBoard guiGameBoard = new GUIGameBoard(mode);
         guiGameBoard.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         guiGameBoard.setVisible(true);
-//        MineSweeperFrame mineSweeperFrame = new MineSweeperFrame(mode);
-//        mineSweeperFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        mineSweeperFrame.setVisible(true);
     }
 
     private static void playConsole(Mode mode) {

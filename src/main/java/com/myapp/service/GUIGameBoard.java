@@ -6,8 +6,8 @@ import com.myapp.gui.MineSweeperPanel;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -15,13 +15,16 @@ import java.util.Random;
 
 import static java.util.stream.Collectors.toList;
 
-public class GUIGameBoard extends JFrame implements ActionListener {
+public class GUIGameBoard extends JFrame implements MouseListener {
     private int size;
     private int bombNum;
     private boolean isFistSelect;
     private boolean wasGameOver;
     private List<ButtonCell> cells;
     private MineSweeperPanel mineSweeperPanel;
+    private JPopupMenu popup;
+    private JMenuItem clearMessage;
+    private JMenuItem gameOverMessage;
 
     public GUIGameBoard(Mode mode) {
         this.size = mode.getSize();
@@ -32,6 +35,9 @@ public class GUIGameBoard extends JFrame implements ActionListener {
         setTitle("MineSweeper");
         mineSweeperPanel = new MineSweeperPanel(mode);
         drawButton(this.size, mode.getButtonSize());
+        popup = new JPopupMenu();
+        gameOverMessage = new JMenuItem("* Game Over :( *");
+        clearMessage = new JMenuItem("** Game Clear!! :) **");
 
         getContentPane().add(mineSweeperPanel, BorderLayout.CENTER);
         pack();
@@ -44,7 +50,7 @@ public class GUIGameBoard extends JFrame implements ActionListener {
                 ButtonCell cell = new ButtonCell(j, i);
                 cell.setBackground(Color.LIGHT_GRAY);
                 cell.setBounds(j * buttonSize, i * buttonSize, buttonSize, buttonSize);
-                cell.addActionListener(this);
+                cell.addMouseListener(this);
                 cells.add(cell);
 
                 mineSweeperPanel.add(cell);
@@ -52,29 +58,19 @@ public class GUIGameBoard extends JFrame implements ActionListener {
         }
     }
 
-    public int getBombNum() {
+    private int getBombNum() {
         return bombNum;
     }
 
-    public List<ButtonCell> getCells() {
-        return cells;
-    }
-
-    public boolean isFistSelect() {
+    private boolean isFistSelect() {
         return isFistSelect;
     }
 
-    public boolean isWasGameOver() {
+    private boolean isWasGameOver() {
         return wasGameOver;
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        ButtonCell cell = (ButtonCell) e.getSource();
-        openCell(cell.getVertical(), cell.getHorizontal());
-    }
-
-    public boolean isExist(int vertical, int horizontal) {
+    private boolean isExist(int vertical, int horizontal) {
         if (vertical >= 0 && this.size > vertical) {
             if (horizontal >= 0 && this.size > horizontal) {
                 return true;
@@ -83,22 +79,22 @@ public class GUIGameBoard extends JFrame implements ActionListener {
         return false;
     }
 
-    Optional<ButtonCell> getCell(int vertical, int horizontal) {
+    private Optional<ButtonCell> getCell(int vertical, int horizontal) {
         if (isExist(vertical, horizontal)) {
            return Optional.of(this.cells.get(horizontal * this.size + vertical));
         }
         return Optional.empty();
     }
 
-    int countAllBomb() {
+    private int countAllBomb() {
         return this.cells
                 .stream()
-                .filter(cell -> cell.isHasBomb())
+                .filter(ButtonCell::isHasBomb)
                 .collect(toList())
                 .size();
     }
 
-    int countAroundBomb(int vertical, int horizontal) {
+    private int countAroundBomb(int vertical, int horizontal) {
         int count = 0;
         for (int i = horizontal - 1; i <= horizontal + 1; i++) {
             for (int j = vertical - 1; j <= vertical + 1; j++) {
@@ -110,16 +106,12 @@ public class GUIGameBoard extends JFrame implements ActionListener {
         return count;
     }
 
-    public int countNotOpenCell() {
+    private int countNotOpenCell() {
         return this.cells.stream()
                 .filter(cell -> !cell.isWasOpened()).collect(toList()).size();
     }
 
-    void setFistSelect(boolean fistSelect) {
-        isFistSelect = fistSelect;
-    }
-
-    void setBomb() {
+    private void setBomb() {
         Random random = new Random();
         int cellNum = this.size * this.size;
 
@@ -133,7 +125,7 @@ public class GUIGameBoard extends JFrame implements ActionListener {
         }
     }
 
-    void setFieldNum() {
+    private void setFieldNum() {
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 int count = countAroundBomb(j, i);
@@ -142,11 +134,18 @@ public class GUIGameBoard extends JFrame implements ActionListener {
         }
     }
 
-    public void setCellFlag(int vertical, int horizontal) {
-        getCell(vertical, horizontal).ifPresent(cell -> cell.setHasFlag(true));
+    private void setCellFlag(int vertical, int horizontal) {
+        getCell(vertical, horizontal).ifPresent(cell -> {
+            cell.setHasFlag(!cell.isHasFlag());
+            if (cell.isHasFlag()) {
+                cell.setText("P");
+            } else {
+                cell.setText("");
+            }
+        });
     }
 
-    public void openCell(int vertical, int horizontal) {
+    private void openCell(int vertical, int horizontal) {
         getCell(vertical, horizontal).ifPresent(cell -> {
             if (cell.isWasOpened() || cell.isHasFlag()) return;
             if (cell.isHasBomb()) {
@@ -179,4 +178,35 @@ public class GUIGameBoard extends JFrame implements ActionListener {
             this.isFistSelect = false;
         }
     }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {}
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        ButtonCell cell = (ButtonCell) e.getSource();
+        if ((e.getModifiers() & MouseEvent.BUTTON1_MASK) != 0) {
+            openCell(cell.getVertical(), cell.getHorizontal());
+            if (isWasGameOver()) showPopup(e, gameOverMessage);
+            if (countNotOpenCell() == getBombNum()) showPopup(e, clearMessage);
+        }
+        if ((e.getModifiers() & MouseEvent.BUTTON3_MASK) != 0) {
+            setCellFlag(cell.getVertical(), cell.getHorizontal());
+        }
+    }
+
+    private void showPopup(MouseEvent e, JMenuItem item) {
+        popup.add(item);
+        popup.show(e.getComponent(), e.getX(), e.getY());
+        System.exit(0);
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {}
+
+    @Override
+    public void mouseEntered(MouseEvent e) {}
+
+    @Override
+    public void mouseExited(MouseEvent e) {}
 }
