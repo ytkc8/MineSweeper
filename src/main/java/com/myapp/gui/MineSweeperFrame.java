@@ -4,8 +4,10 @@ import com.myapp.domain.Mode;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-public class MineSweeperFrame extends JFrame {
+public class MineSweeperFrame extends JFrame implements ActionListener {
     private MineSweeperPanel mineSweeperPanel;
 
     public MineSweeperFrame(Mode mode) {
@@ -26,9 +28,15 @@ public class MineSweeperFrame extends JFrame {
                 JButton jButton = new JButton();
                 jButton.setBackground(Color.LIGHT_GRAY);
                 jButton.setBounds(j * buttonSize, i * buttonSize, buttonSize, buttonSize);
+                jButton.addActionListener(this);
 
                 mineSweeperPanel.add(jButton);
             }
         }
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        System.out.println();
     }
 }
