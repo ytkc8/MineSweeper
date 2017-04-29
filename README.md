@@ -25,7 +25,10 @@ You can change difficulty by switching application start command. Check Usage fo
 
 ## Usage
 
-Please execute follow command, If you want to ...
+### How to start Application 
+After you clone this repoditory, please execute follow command.
+
+If you want to play ...
 - easy mode
 
   `make start_easy`
@@ -37,6 +40,16 @@ Please execute follow command, If you want to ...
 - hard mode
 
   `make start_hard`
+  
+### How to play by GUI
+Your operation is only two.
+
+You can open cell using single finger click (left click).
+
+And you can set flag using double finger click (right click).
+
+### How to play by console
+Seen do it!!
 
 ## Author
 
