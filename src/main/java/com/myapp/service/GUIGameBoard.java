@@ -3,6 +3,7 @@ package com.myapp.service;
 import com.myapp.domain.ButtonCell;
 import com.myapp.domain.Mode;
 import com.myapp.gui.MineSweeperPanel;
+import com.myapp.gui.MineSweeperPopup;
 
 import javax.swing.*;
 import java.awt.*;
@@ -31,6 +32,7 @@ public class GUIGameBoard extends JFrame implements MouseListener {
         this.cells = new ArrayList<>(size * bombNum);
         setTitle("MineSweeper");
         mineSweeperPanel = new MineSweeperPanel(mode);
+        mineSweeperPanel.setLayout(null);
         drawButton(this.size, mode.getButtonSize());
 
         getContentPane().add(mineSweeperPanel, BorderLayout.CENTER);
@@ -38,7 +40,6 @@ public class GUIGameBoard extends JFrame implements MouseListener {
     }
 
     private void drawButton(int size, int buttonSize) {
-        mineSweeperPanel.setLayout(null);
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 ButtonCell cell = new ButtonCell(j, i);
@@ -190,12 +191,9 @@ public class GUIGameBoard extends JFrame implements MouseListener {
     }
 
     private void showPopup(String message) {
-        JFrame popup = new JFrame();
-        MineSweeperPanel popupPanel = new MineSweeperPanel(100, 100);
-        popupPanel.add(new JLabel(message));
-        popup.add(popupPanel);
-        popup.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        popup.setVisible(true);
+        MineSweeperPopup mineSweeperPopup = new MineSweeperPopup(message);
+        mineSweeperPopup.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        mineSweeperPopup.setVisible(true);
     }
 
     @Override
