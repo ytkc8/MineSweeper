@@ -8,15 +8,15 @@ Simple MineSweeper by GUI or console.
 You can play MineSweeper by GUI or console. But if you want to switch play mode, you have to chenge source code 1 line. Default mode is GUI. We are going to update in a few days.
 You can change difficulty by switching application start command. Check Usage for details.
 
-- easy mode
-  - Field size : ***5 * 5***
-  - Number of bomb : ***5***
-- middle mode
-  - Field size : ***8 * 8***
-  - Number of bomb : ***10***
-- hard mode
-  - Field size : ***10 * 10***
-  - Number of bomb : ***20***
+- **easy mode**
+  - ***Field size*** : *5 * 5*
+  - ***Number of bomb*** : *5*
+- **middle mode**
+  - ***Field size*** : *8 * 8*
+  - ***Number of bomb*** : *10*
+- **hard mode**
+  - ***Field size*** : *10 * 10*
+  - ***Number of bomb*** : *20*
 
 ## Requirement
 
@@ -42,11 +42,11 @@ If you want to play ...
   `make start_hard`
   
 ### How to play by GUI
-Your operation is only two.
+You can use just two operations.
 
-You can open cell using single finger click (left click).
+- ***Single finger click (left click)*** : *You can open cell.*
 
-And you can set flag using double finger click (right click).
+- ***Double finger click (right click)*** : *You can set flag.*
 
 ### How to play by console
 Seen do it!!
